@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bikol Translator</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #faf3ea; --card: #fefaf4; --field: #faf5ec; --out: #f6ede4; --line: #eadfce; --select: #f6ede0;
+    --ink: #0c2b3a; --muted: #6c7b86; --teal: #0b4f4a;
+    --accent: #e8734a; --accent-dark: #d4603a; --eyebrow: #e0643a; --accent-line: #f2cdbd;
+    --serif: "Fraunces", Georgia, "Times New Roman", serif;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  body {
+    font-family: var(--sans); color: var(--ink); background-color: var(--bg);
+    background-image: repeating-linear-gradient(45deg, rgba(190,160,130,.07) 0 1px, transparent 1px 26px),
+                      repeating-linear-gradient(-45deg, rgba(190,160,130,.07) 0 1px, transparent 1px 26px);
+  }
+  h1, h2, h3, .brand-name { font-family: var(--serif); color: var(--ink); }
+  .site-header { padding: 20px 0 14px; background: #fbf3ea; }
+  .scallop { height: 12px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12'%3E%3Cpath d='M0 6 Q6 0 12 6 T24 6' fill='none' stroke='%23eeb59d' stroke-width='1.2'/%3E%3C/svg%3E") repeat-x; border-bottom: 1px solid var(--line); }
+  .logo { width: 54px; height: 54px; border-radius: 50%; background: var(--teal); display: grid; place-items: center; color: #fff; flex: none; }
+  .brand-name { font-size: 1.5rem; font-weight: 700; line-height: 1.1; }
+  .brand-sub { font-size: .75rem; letter-spacing: .2em; color: var(--muted); text-transform: uppercase; margin-top: 4px; }
+  .navlink { border: 0; background: transparent; color: var(--ink); opacity: .72; padding: 8px 14px; font-size: 1.02rem; border-bottom: 2px solid transparent; }
+  .navlink:hover { opacity: 1; }
+  .navlink.active { opacity: 1; font-weight: 600; border-bottom-color: var(--accent); }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #2e9e63; margin-left: 10px; }
+  .dot.off { background: #d4503f; }
+  .hero { padding: 54px 0 30px; }
+  .eyebrow { font-size: .8rem; letter-spacing: .28em; text-transform: uppercase; color: var(--eyebrow); font-weight: 600; margin-bottom: 20px; }
+  .hero h1 { font-size: clamp(2.5rem, 6vw, 4.2rem); font-weight: 700; line-height: 1.08; max-width: 12.5em; margin-bottom: 22px; }
+  .hero p { color: var(--muted); font-size: 1.2rem; max-width: 36em; }
+  .tcard { background: var(--card); border: 1px solid #efe4d3; border-radius: 34px; padding: 34px; box-shadow: 0 12px 40px rgba(12,43,58,.06); }
+  .form-select.pill { border-radius: 999px; border: 1px solid #e6d8c4; background-color: var(--select); padding: 16px 26px; font-size: 1.15rem; color: var(--ink); box-shadow: 0 2px 6px rgba(12,43,58,.05); }
+  .form-select.pill:focus { border-color: var(--accent-line); box-shadow: 0 0 0 .25rem rgba(232,115,74,.12); }
+  .swap { width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line); background: #fff; color: var(--ink); display: grid; place-items: center; flex: none; box-shadow: 0 2px 6px rgba(12,43,58,.05); }
+  .swap:disabled { opacity: .35; cursor: not-allowed; }
+  .box { width: 100%; min-height: 335px; border: 1px solid var(--line); border-radius: 30px; padding: 26px 28px; font-size: 1.4rem; line-height: 1.5; color: var(--ink); }
+  textarea.box { background: var(--field); resize: vertical; outline: none; display: block; }
+  textarea.box:focus { border-color: var(--accent-line); box-shadow: 0 0 0 .25rem rgba(232,115,74,.1); }
+  textarea.box::placeholder { color: #8c9399; }
+  .out { background: var(--out); white-space: pre-wrap; word-break: break-word; }
+  .out:empty::before { content: attr(data-ph); color: #8c9399; }
+  .hint { color: var(--muted); font-size: .95rem; }
+  .actions { border-top: 1px solid var(--line); margin-top: 30px; padding-top: 28px; }
+  .btn-accent { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: #fff; border: 0; border-radius: 999px; padding: 15px 34px; font-weight: 600; font-size: 1.05rem; }
+  .btn-accent:hover:not(:disabled) { background: var(--accent-dark); color: #fff; }
+  .btn-accent:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-line { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 15px 28px; font-size: 1.05rem; }
+  .btn-line:hover:not(:disabled) { background: #f6ede0; }
+  .btn-line:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-line.report { color: var(--accent-dark); border-color: var(--accent-line); }
+  .section-card { background: var(--card); border: 1px solid #efe4d3; border-radius: 28px; padding: 28px; box-shadow: 0 12px 40px rgba(12,43,58,.05); }
+  .table > :not(caption) > * > * { background: transparent; border-color: var(--line); }
+  .form-control.soft { border-radius: 16px; border: 1px solid var(--line); background: #fff; padding: 12px 16px; }
+  footer { color: var(--muted); font-size: .9rem; padding: 40px 0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container d-flex flex-wrap align-items-center justify-content-between gap-3">
+    <div class="d-flex align-items-center gap-3">
+      <div class="logo" aria-hidden="true">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+      </div>
+      <div>
+        <div class="brand-name">Bikol Translator</div>
+        <div class="brand-sub">Virac · Pandan · English</div>
+      </div>
+    </div>
+    <nav class="d-flex flex-wrap gap-2 align-items-center">
+      <button class="navlink active" data-go="translate">Translate</button>
+      <button class="navlink" data-go="sentences">Sentence list</button>
+      <button class="navlink" data-go="reports">Reports</button>
+      <button class="navlink" data-go="about">About the project</button>
+      <span id="status" class="dot off" title="Checking the translator..."></span>
+    </nav>
+  </div>
+</header>
+<div class="scallop"></div>
+
+<main class="container pb-5">
+
+  <!-- TRANSLATE -->
+  <section data-page="translate">
+    <div class="hero">
+      <div class="eyebrow">Catanduanes Bikol</div>
+      <h1>Translate English, Virac &amp; Pandan</h1>
+      <p>Type a sentence, pick the dialects, and translate. Report anything wrong so it can be used for retraining.</p>
+    </div>
+    <div class="tcard">
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <select id="src" class="form-select pill" aria-label="Translate from"></select>
+        <button id="swap" class="swap" title="Swap languages" aria-label="Swap languages">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>
+        </button>
+        <select id="tgt" class="form-select pill" aria-label="Translate to"></select>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <textarea id="inp" class="box" maxlength="1000" placeholder="Type text..." aria-label="Original text"></textarea>
+          <div class="d-flex justify-content-between mt-3 hint"><span>Ctrl + Enter to translate</span><span id="charCount">0/1000</span></div>
+        </div>
+        <div class="col-md-6">
+          <div id="out" class="box out" data-ph="Translation appears here" aria-live="polite"></div>
+          <div id="meta" class="hint mt-3"></div>
+        </div>
+      </div>
+      <div class="actions d-flex flex-wrap align-items-center gap-3">
+        <button id="go" class="btn-accent" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/></svg>
+          Translate
+        </button>
+        <button id="copy" class="btn-line" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span id="copyLabel">Copy</span>
+        </button>
+        <button id="report" class="btn-line report" disabled>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+          Report Inaccurate Translation
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SENTENCE LIST -->
+  <section data-page="sentences" hidden>
+    <div class="hero"><div class="eyebrow">Catanduanes Bikol</div><h1>Sentence list</h1>
+      <p>The sentences the translator knows. Add new ones here and they are used straight away, with no retraining.</p></div>
+    <div class="section-card mb-4">
+      <h3 class="h5 mb-3">Add sentences</h3>
+      <div class="row g-2 mb-3">
+        <div class="col-md-4"><input id="nEn" class="form-control soft" placeholder="English"></div>
+        <div class="col-md-4"><input id="nVi" class="form-control soft" placeholder="Virac"></div>
+        <div class="col-md-4"><input id="nPa" class="form-control soft" placeholder="Pandan"></div>
+      </div>
+      <div class="d-flex flex-wrap align-items-center gap-3">
+        <button id="addOne" class="btn-accent">Add sentence</button>
+        <span class="hint">or upload a CSV with english, virac, pandan columns:</span>
+        <input id="csv" type="file" accept=".csv" class="form-control soft" style="max-width: 280px">
+        <span id="addMsg" class="hint"></span>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
+        <input id="q" class="form-control soft" style="max-width: 340px" placeholder="Search sentences...">
+        <span id="count" class="hint"></span>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle"><thead><tr><th>English</th><th>Virac</th><th>Pandan</th></tr></thead><tbody id="rows"></tbody></table>
+      </div>
+      <div class="d-flex gap-2 justify-content-end">
+        <button id="prev" class="btn-line">Previous</button><button id="next" class="btn-line">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- REPORTS -->
+  <section data-page="reports" hidden>
+    <div class="hero"><div class="eyebrow">Catanduanes Bikol</div><h1>Reports</h1>
+      <p>Translations people marked as inaccurate. They are kept in a SQLite database for future retraining.</p></div>
+    <div class="section-card">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <span id="repCount" class="hint"></span><button id="repRefresh" class="btn-line">Refresh</button>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-middle"><thead><tr><th>When</th><th>Direction</th><th>Source</th><th>Model output</th><th>Suggested correction</th></tr></thead><tbody id="repRows"></tbody></table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section data-page="about" hidden>
+    <div class="hero"><div class="eyebrow">Catanduanes Bikol</div><h1>About the project</h1>
+      <p>A low-resource neural machine translation system for two Catanduanes Bikol varieties: Virac (Southern) and Pandan (Northern).</p></div>
+    <div class="section-card">
+      <h3 class="h5">How it works</h3>
+      <p>The translator is NLLB-200 (distilled, 600M parameters) fine-tuned with LoRA on a small parallel corpus. It translates English to Virac, English to Pandan, and Virac to Pandan.</p>
+      <p>A translation memory answers sentences it already knows, and new sentences can be added without retraining. When a sentence is not close to anything it has learned, it answers
+        <em>mai ko isi</em> (Pandan) or <em>dai ko isi</em> (Virac) instead of guessing.</p>
+      <h3 class="h5 mt-4">Good to know</h3>
+      <p class="mb-0">The training data covers cooking and food sentences only, so other topics may be translated poorly. Use the report button to flag mistakes.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="container text-center">Bikol Translator · language preservation project</footer>
+
+<!-- Report modal -->
+<div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered"><div class="modal-content" style="border-radius: 24px">
+    <div class="modal-header border-0"><h5 class="modal-title">Report Inaccurate Translation</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div>
+    <div class="modal-body">
+      <p class="hint mb-2">What should the translation be? (optional)</p>
+      <textarea id="suggest" class="form-control soft" rows="3"></textarea>
+    </div>
+    <div class="modal-footer border-0"><button class="btn-line" data-bs-dismiss="modal">Cancel</button>
+      <button id="sendReport" class="btn-accent">Send report</button></div>
+  </div></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+const MAX = 1000;
+const isLocalHost = ['localhost', '127.0.0.1'].includes(location.hostname);
+// Served by FastAPI on port 8000 -> same origin. Opened any other way (file, Live Server) -> call the API directly.
+const API = (location.protocol === 'file:' || (isLocalHost && location.port !== '8000')) ? 'http://127.0.0.1:8000' : '';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let DIRS = [], NAMES = {}, timer, reqId = 0, lastOut = '', busy = false;
+let sp = {page: 1, q: ''};
+
+/* ---------- navigation ---------- */
+function show(page) {
+  document.querySelectorAll('[data-page]').forEach(s => s.hidden = s.dataset.page !== page);
+  document.querySelectorAll('.navlink').forEach(b => b.classList.toggle('active', b.dataset.go === page));
+  if (page === 'sentences') loadSentences();
+  if (page === 'reports') loadReports();
+  history.replaceState(null, '', '#' + page);
+}
+document.querySelectorAll('.navlink').forEach(b => b.onclick = () => show(b.dataset.go));
+
+/* ---------- server status ---------- */
+async function checkHealth() {
+  try {
+    const d = await (await fetch(API + '/api/v1/health')).json();
+    const ok = d.status === 'ok';
+    $('status').classList.toggle('off', !ok); $('status').title = ok ? 'Translator online' : 'Translator offline';
+  } catch (e) { $('status').classList.add('off'); $('status').title = 'Translator offline'; }
+}
+
+/* ---------- buttons ---------- */
+function refreshButtons() {
+  $('go').disabled = busy || !$('inp').value.trim();
+  $('copy').disabled = !lastOut;
+  $('report').disabled = !lastOut;
+}
+function updateCount() { $('charCount').textContent = $('inp').value.length + '/' + MAX; }
+
+/* ---------- language selectors ---------- */
+function fillSource() {
+  const srcs = [...new Set(DIRS.map(d => d[0]))];
+  $('src').innerHTML = srcs.map(s => `<option value="${s}">${esc(NAMES[s])}</option>`).join('');
+}
+function fillTarget(keep) {
+  const ts = DIRS.filter(d => d[0] === $('src').value).map(d => d[1]);
+  $('tgt').innerHTML = ts.map(t => `<option value="${t}">${esc(NAMES[t])}</option>`).join('');
+  if (keep && ts.includes(keep)) $('tgt').value = keep;
+  updateSwap();
+}
+function updateSwap() { $('swap').disabled = !DIRS.some(d => d[0] === $('tgt').value && d[1] === $('src').value); }
+$('src').onchange = () => { fillTarget(); scheduleTranslate(); };
+$('tgt').onchange = () => { updateSwap(); scheduleTranslate(); };
+$('swap').onclick = () => {
+  const s = $('src').value, t = $('tgt').value;
+  if ($('swap').disabled) return;
+  const carry = lastOut;
+  $('src').value = t; fillTarget(s); $('tgt').value = s; updateSwap();
+  $('inp').value = carry.slice(0, MAX); updateCount(); setOut(''); scheduleTranslate();
+};
+
+/* ---------- translate ---------- */
+function setOut(t) { $('out').textContent = t; lastOut = t; refreshButtons(); }
+function scheduleTranslate() { clearTimeout(timer); timer = setTimeout(translate, 700); refreshButtons(); }
+async function translate() {
+  clearTimeout(timer);
+  const text = $('inp').value.trim(), id = ++reqId;
+  if (!text) { busy = false; setOut(''); $('meta').textContent = ''; return; }
+  busy = true; refreshButtons(); $('meta').textContent = 'Translating...';
+  try {
+    const r = await fetch(API + '/api/v1/translate', {method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({source_text: text, source_lang: $('src').value, target_lang: $('tgt').value})});
+    const d = await r.json();
+    if (id !== reqId) return;
+    if (!r.ok) throw new Error(d.detail || 'Error');
+    setOut(d.translated_text);
+    $('meta').textContent = 'confidence ' + d.confidence_score + ' \u00b7 ' + d.inference_latency_ms + ' ms';
+  } catch (e) { if (id === reqId) { setOut(''); $('meta').textContent = 'Could not translate: ' + e.message; } }
+  finally { if (id === reqId) { busy = false; refreshButtons(); } }
+}
+$('inp').oninput = () => { updateCount(); scheduleTranslate(); };
+$('inp').addEventListener('keydown', e => { if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); translate(); } });
+$('go').onclick = translate;
+$('copy').onclick = async () => {
+  if (!lastOut) return;
+  try { await navigator.clipboard.writeText(lastOut); } catch (e) {
+    const ta = document.createElement('textarea'); ta.value = lastOut; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+  }
+  $('copyLabel').textContent = 'Copied'; setTimeout(() => $('copyLabel').textContent = 'Copy', 1200);
+};
+
+/* ---------- Report Inaccurate Translation ---------- */
+let reportModal = null;
+try { reportModal = new bootstrap.Modal($('reportModal')); } catch (e) { console.warn('Bootstrap JS not loaded; using a simple prompt for reports.'); }
+async function sendReport(suggested) {
+  await fetch(API + '/api/v1/feedback', {method: 'POST', headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({source_text: $('inp').value, source_lang: $('src').value, target_lang: $('tgt').value,
+                          model_output: lastOut, suggested_text: (suggested || '').trim() || null})});
+  $('meta').textContent = 'Thanks! Report saved for retraining.';
+}
+$('report').onclick = () => {
+  if (!lastOut) return;
+  if (reportModal) { $('suggest').value = ''; reportModal.show(); return; }
+  const s = prompt('What should the translation be? (optional)');
+  if (s !== null) sendReport(s);
+};
+$('sendReport').onclick = async () => { await sendReport($('suggest').value); if (reportModal) reportModal.hide(); };
+
+/* ---------- sentence list ---------- */
+async function loadSentences() {
+  const size = 25;
+  const d = await (await fetch(`${API}/api/v1/sentences?q=${encodeURIComponent(sp.q)}&page=${sp.page}&page_size=${size}`)).json();
+  $('rows').innerHTML = d.items.map(x => `<tr><td>${esc(x.english)}</td><td>${esc(x.virac)}</td><td>${esc(x.pandan)}</td></tr>`).join('');
+  const from = d.total ? (sp.page - 1) * size + 1 : 0, to = Math.min(sp.page * size, d.total);
+  $('count').textContent = `Showing ${from}\u2013${to} of ${d.total}`;
+  $('prev').disabled = sp.page <= 1; $('next').disabled = to >= d.total;
+}
+$('prev').onclick = () => { sp.page--; loadSentences(); };
+$('next').onclick = () => { sp.page++; loadSentences(); };
+let qTimer; $('q').oninput = () => { clearTimeout(qTimer); qTimer = setTimeout(() => { sp = {page: 1, q: $('q').value}; loadSentences(); }, 300); };
+
+async function postMemory(rows) {
+  const r = await fetch(API + '/api/v1/memory', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(rows)});
+  if (!r.ok) throw new Error('server error'); return r.json();
+}
+$('addOne').onclick = async () => {
+  const row = {english: $('nEn').value.trim(), virac: $('nVi').value.trim(), pandan: $('nPa').value.trim()};
+  if (!row.english || !row.virac || !row.pandan) { $('addMsg').textContent = 'Fill in all three languages.'; return; }
+  try { await postMemory([row]); $('addMsg').textContent = 'Added.'; ['nEn','nVi','nPa'].forEach(i => $(i).value = ''); loadSentences(); }
+  catch (e) { $('addMsg').textContent = 'Could not add: ' + e.message; }
+};
+function parseCSV(t) {
+  const rows = []; let row = [], f = '', q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { if (c === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(f); f = ''; }
+    else if (c === '\n') { row.push(f); rows.push(row); row = []; f = ''; }
+    else if (c !== '\r') f += c;
+  }
+  if (f !== '' || row.length) { row.push(f); rows.push(row); }
+  return rows;
+}
+$('csv').onchange = async e => {
+  const file = e.target.files[0]; if (!file) return;
+  const rows = parseCSV((await file.text()).replace(/^\uFEFF/, ''));
+  const head = rows[0].map(h => h.trim().toLowerCase());
+  const [ie, iv, ip] = ['english', 'virac', 'pandan'].map(n => head.indexOf(n));
+  if (ie < 0 || iv < 0 || ip < 0) { $('addMsg').textContent = 'The CSV needs english, virac and pandan columns.'; return; }
+  const data = rows.slice(1).map(r => ({english: (r[ie] || '').trim(), virac: (r[iv] || '').trim(), pandan: (r[ip] || '').trim()}))
+                    .filter(r => r.english && r.virac && r.pandan);
+  try {
+    $('addMsg').textContent = `Adding ${data.length} sentences...`;
+    for (let i = 0; i < data.length; i += 1000) await postMemory(data.slice(i, i + 1000));
+    $('addMsg').textContent = `Added ${data.length} sentences.`; loadSentences();
+  } catch (err) { $('addMsg').textContent = 'Could not add: ' + err.message; }
+  e.target.value = '';
+};
+
+/* ---------- reports ---------- */
+async function loadReports() {
+  const d = await (await fetch(API + '/api/v1/feedback')).json();
+  $('repCount').textContent = d.total + ' report' + (d.total === 1 ? '' : 's');
+  $('repRows').innerHTML = d.items.map(x => `<tr><td class="text-nowrap">${esc(x.created_at)}</td>
+    <td class="text-nowrap">${esc(NAMES[x.source_lang] || x.source_lang)} \u2192 ${esc(NAMES[x.target_lang] || x.target_lang)}</td>
+    <td>${esc(x.source_text)}</td><td>${esc(x.model_output)}</td><td>${esc(x.suggested_text || '')}</td></tr>`).join('');
+}
+$('repRefresh').onclick = loadReports;
+
+/* ---------- start ---------- */
+(async function init() {
+  updateCount(); refreshButtons();
+  checkHealth(); setInterval(checkHealth, 15000);
+  try {
+    const d = await (await fetch(API + '/api/v1/directions')).json(); DIRS = d.directions; NAMES = d.names;
+    fillSource(); fillTarget();
+  } catch (e) { $('meta').textContent = 'Translator server is not running.'; }
+  const start = location.hash.slice(1);
+  show(['translate', 'sentences', 'reports', 'about'].includes(start) ? start : 'translate');
+})();
+</script>
+</body>
+</html>

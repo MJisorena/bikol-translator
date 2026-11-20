@@ -1,0 +1,8 @@
+torch
+transformers
+peft
+sentencepiece
+scikit-learn
+pandas
+fastapi
+uvicorn[standard]

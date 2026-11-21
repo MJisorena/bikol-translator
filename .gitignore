@@ -3,6 +3,4 @@ __pycache__/
 *.db
 checkpoints/
 adapter/
-data/*.csv
-data/processed/
 .env

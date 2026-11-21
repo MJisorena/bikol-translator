@@ -1,0 +1,55 @@
+{
+  "log": {
+    "raw_rows": 1505,
+    "rows_after_cleaning": 1504,
+    "val_removed_for_leakage": 3,
+    "test_removed_for_leakage": 4,
+    "train_pairs": 3146,
+    "train_by_direction": {
+      "bcl_South->bcl_North": 1042,
+      "eng_Latn->bcl_North": 1052,
+      "eng_Latn->bcl_South": 1052
+    },
+    "validation_pairs": 675,
+    "validation_by_direction": {
+      "bcl_South->bcl_North": 223,
+      "eng_Latn->bcl_North": 226,
+      "eng_Latn->bcl_South": 226
+    },
+    "test_pairs": 673,
+    "test_by_direction": {
+      "bcl_South->bcl_North": 221,
+      "eng_Latn->bcl_North": 226,
+      "eng_Latn->bcl_South": 226
+    }
+  },
+  "English": {
+    "sentences": 1504,
+    "tokens": 9784,
+    "types": 1029,
+    "TTR": 0.1052,
+    "len_mean": 6.51,
+    "len_median": 6.0,
+    "len_max": 21
+  },
+  "Virac (South)": {
+    "sentences": 1504,
+    "tokens": 9908,
+    "types": 1181,
+    "TTR": 0.1192,
+    "len_mean": 6.59,
+    "len_median": 7.0,
+    "len_max": 17
+  },
+  "Pandan (North)": {
+    "sentences": 1504,
+    "tokens": 9664,
+    "types": 1271,
+    "TTR": 0.1315,
+    "len_mean": 6.43,
+    "len_median": 6.0,
+    "len_max": 15
+  },
+  "Virac_Pandan_vocab_jaccard": 0.4449,
+  "rows_where_Virac_equals_Pandan": 77
+}

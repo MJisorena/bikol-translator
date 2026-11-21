@@ -1,0 +1,11 @@
+model,subset,n,BLEU,chrF++,TER
+Zero-shot NLLB-600M,ALL,673,3.09,27.53,96.6
+Zero-shot NLLB-600M,bcl_South -> bcl_North,221,4.17,28.12,97.31
+Zero-shot NLLB-600M,bcl_South -> bcl_North (non-identical only),210,4.25,27.98,96.55
+Zero-shot NLLB-600M,eng_Latn -> bcl_North,226,2.21,25.87,99.39
+Zero-shot NLLB-600M,eng_Latn -> bcl_South,226,2.62,28.6,93.18
+Fine-tuned LoRA,ALL,673,45.74,66.37,37.49
+Fine-tuned LoRA,bcl_South -> bcl_North,221,60.1,78.38,24.02
+Fine-tuned LoRA,bcl_South -> bcl_North (non-identical only),210,58.91,77.62,24.86
+Fine-tuned LoRA,eng_Latn -> bcl_North,226,38.56,60.26,43.52
+Fine-tuned LoRA,eng_Latn -> bcl_South,226,38.17,60.72,44.62

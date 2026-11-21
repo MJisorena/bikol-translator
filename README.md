@@ -21,9 +21,10 @@ Directions: English -> Virac, English -> Pandan, Virac -> Pandan.
 | `index.html` | Bootstrap 5 side-by-side translator page |
 | `config.py` | Directions, LoRA settings, thresholds |
 | `memory.csv` | Translation memory (included in this repository) |
+| `data/processed/` | Cleaned and split corpus (train, validation, test CSVs) |
 | `notebooks/Bikol_NMT_Colab.ipynb` | Full Colab pipeline: data, training, evaluation |
 | `results/` | Evaluation outputs: metrics, latency, error analysis, loss curve, data statistics |
-| `data/processed/` | Cleaned and split corpus (train, validation, test CSVs) |
+
 
 ## Setup and run (VS Code, Windows / macOS / Linux)
 
